@@ -1,108 +1,103 @@
 '''
-You are given a non-empty array of integers.
-
-One element appears exactly once, with every other 
-element appearing at least twice, perhaps more.
-
-Write a function that can find and return the element 
-that appears exactly once.
+Given an integer, write a function that reverses 
+the bits (in binary) and returns the integer result.
 
 Understand:
-[1,1,2,1] --> 2
-[1,2,1,2,1,2,80] --> 80
+417 --> 267
+167 --> 417
+0 --> 0
 
 Plan:
-Use a dictionary to keep track of how often an integer 
-appears in the array. Return the integer that only appears once.
+Use bin() to convert the binary into a string. 
+Use bracket indexing to reverse the order. 
+Use int() to convert it into a decimal number.
 '''
 
-def csFindTheSingleNumber(nums):
-    dict_ = {}
-    for i, num in enumerate(nums):
-        if num not in dict_:
-            dict_[num] = 1
-        else:
-            dict_[num] += 1
-    for num, inst in dict_.items():
-        if inst == 1:
-            return num
-    else:
-        return 0 
-'''
-Given a list of different students' scores, write a function 
-that returns the average of each student's top five scores. 
-You should return the averages in ascending order of the 
-students' id numbers.
+def csReverseIntegerBits(n):
+    str_n = bin(n).replace("0b","")
+    rev_str_n = str_n[::-1]
+    int_n = int(rev_str_n, 2)
+    return int_n
 
-Each entry (scores[i]) has the student's id number 
-(scores[i][0]) and the student's score (scores[i][1]). 
-The averages should be calculated using integer division.
+#Author's Answer
+def csReverseIntegerBits(n):
+    return int(bin(n)[:1:-1],2)
+
+'''
+Given a binary string (ASCII encoded), write a function 
+that returns the equivalent decoded text.
+
+Every eight bits in the binary string represents one 
+character on the ASCII table.
 
 Understand:
-Input: [[1,91],[1,92],[2,93],[2,97],[1,60],[2,77],
-[1,65],[1,87],[1,100],[2,100],[2,76]]
-Output: [[1,87],[2,88]]
+csBinaryToASCII("011011000110000101101101011000100110010001100001") -> "lambda"
+"" --> ""
 
 Plan:
-For each student, store the student ID and the average of their scores. 
-Sort the array by the order of the average, and return the array. 
+Split the string into a list of every 8 digits. 
+Convert each 8 digit into its ASCII character. 
+Join the string.
 '''
-from statistics import mean
 
-def csAverageOfTopFive(scores):
-    average_scores = {}
-    for i in range(len(scores)):
-        if scores[i][0] not in average_scores:
-            new_list = []
-            new_list.append(scores[i][1])
-            average_scores[scores[i][0]] = new_list
-        else:
-            average_scores[scores[i][0]].append(scores[i][1])     
-    print(average_scores) 
-    result = []
-    for student, grades in average_scores.items():
-        sorted_grades = sorted(grades, reverse=True)
-        top_five = sorted_grades[:5]
-        entry = [student, sum(top_five)//len(top_five)]
-        result.append(entry)
+def csBinaryToASCII(binary):
+    str_list = []
+    for i in range(0, len(binary), 8):
+        str_list.append(int(binary[i:i+8], 2))
+    chr_binary = []
+    for str_ in str_list:
+        chr_binary.append(chr(str_))
+    return "".join(chr_binary)
+    
+#Author's Answer
+def csBinaryToASCII(binary):
+    return "".join( [ chr(int(binary[i: i+8], 2)) for i in range(0, len(binary), 8) ] )
+
+'''
+Given a number, write a function that converts 
+that number into a string that contains "raindrop sounds" 
+corresponding to certain potential factors. A factor 
+is a number that evenly divides into another number, 
+leaving no remainder. The simplest way to test if one 
+number is a factor of another is to use the modulo operator.
+
+Here are the rules for csRaindrop. If the input number:
+
+has 3 as a factor, add "Pling" to the result.
+has 5 as a factor, add "Plang" to the result.
+has 7 as a factor, add "Plong" to the result.
+does not have any of 3, 5, or 7 as a factor, the result 
+should be the digits of the input number.
+
+Understand:
+28 --> "Plong"
+30 --> "PlingPlang"
+34 --> "34"
+
+Plan:
+Using if statements, check if the number has a factor 
+of 3, 5, or 7. If so, append an empty string with Pling, 
+Plang, or Plong. Else, return the number as the string.
+'''
+
+def csRaindrops(number):
+    result = ""
+    if number % 3 == 0:
+        result += "Pling"
+    if number % 5 == 0:
+        result += "Plang"
+    if number % 7 == 0:
+        result += "Plong"
+    if result == "":
+        result += str(number)
     return result
 
-'''
-Given a string text, you need to use the characters 
-of text to form as many instances of the word "lambda" as possible.
+#Author's Answer
+def csRaindrops(number):
+    result = ''
+    result += "Pling" * (number % 3 == 0)
+    result += "Plang" * (number % 5 == 0)
+    result += "Plong" * (number % 7 == 0)
 
-You can use each character in text at most once.
+    return result or str(number)
 
-Write a function that returns the maximum number of 
-instances of "lambda" that can be formed.
-
-Understand:
-"mbxcdatlas": 1
-"lalaaxcmbdtsumbdav": 2
-"sctlamb": 0
-
-Plan:
-While there is a letter from the text "lambda", pop it off 
-the text and add it to an empty string. If the string spells 
-"lambda', add 1 to the counter, and clear the string/start over. 
-Return the counter. 
-'''
-
-def csMaxNumberOfLambdas(text):
-    lambda_dic = {}
-    char_list = [char for char in text]
-    lambda_list = 'lambda'
-    for char in text:
-        if char in lambda_list and char not in lambda_dic:
-            lambda_dic[char] = 1
-        elif char in lambda_list and char in lambda_dic:
-            lambda_dic[char] += 1
-        else:
-            continue
-
-    min_num = min(lambda_dic.keys(), key=(lambda k: lambda_dic[k]))
-    min_num = lambda_dic[min_num]
-    if all(value >= min_num for value in lambda_dic.values()) and lambda_dic['a'] >= (2*min_num):
-        return min_num
-    else:
-        return 0

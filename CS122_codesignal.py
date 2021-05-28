@@ -1,119 +1,143 @@
 '''
-Given two strings a and b, determine if they are isomorphic.
+You are given a non-empty array of integers.
 
-Two strings are isomorphic if the characters in a can be replaced to get b.
+One element appears exactly once, with every other 
+element appearing at least twice, perhaps more.
 
-All occurrences of a character must be replaced with another 
-character while preserving the order of characters. 
-No two characters may map to the same character but a 
-character may map to itself.
+Write a function that can find and return the element 
+that appears exactly once.
 
 Understand:
-a = "odd", b = "egg" --> true
-a = "foo", b = "bar" --> false
-a = "abca", b = "zbxz" --> true
-a = "abc", b = "" --> false
+[1,1,2,1] --> 2
+[1,2,1,2,1,2,80] --> 80
 
 Plan:
-Create a dictionary. Map the corresponding characters to each other. If a key is already assigned to a value, and there is a new key value pair, return false.
-
-Runtime: O(n)
-Space: O(n)
+Use a dictionary to keep track of how often an integer 
+appears in the array. Return the integer that only appears once.
 '''
 
-def csIsomorphicStrings(a, b):
-    if len(a) == len(b):
-        pass
-    else:
-        return False
-        
+def csFindTheSingleNumber(nums):
     dict_ = {}
-    for i in range(len(a)):
-        if a[i] not in dict_:
-            dict_[a[i]] = b[i]
+    for i, num in enumerate(nums):
+        if num not in dict_:
+            dict_[num] = 1
         else:
-            if dict_[a[i]] == b[i]:
-                pass
-            else:
-                return False
-    return True
-
-'''
-Given a pattern and a string a, find if a follows the same pattern.
-
-Here, to "follow" means a full match, such that there is a one-to-one 
-correspondence between a letter in pattern and a non-empty word in a.
-
-Understand:
-"abba", "lambda school school lambda" --> true
-"abba", "lambda school school coding" --> false
-"aaaa", "lambda school school lambda" --> false
-"abba", "lambda lambda lambda lambda" --> false
-
-Plan:
-Split a into a list of words. Hash and store each letter of the pattern to the word in the string. If it exists already and the values don't match, return false.
-
-Runtime: O(n)
-Space: O(n)
-'''
-
-def csWordPattern(pattern, a):
-    a_tokens = a.split()
-    
-    if len(a_tokens) != len(pattern):
-        return False
+            dict_[num] += 1
+    for num, inst in dict_.items():
+        if inst == 1:
+            return num
     else:
-        pass
-    
-    dict_ = {}
-    for i in range(len(pattern)):
-        if pattern[i] not in dict_ and a_tokens[i] not in dict_.values():
-            dict_[pattern[i]] = a_tokens[i]
-        elif pattern[i] in dict_ and dict_[pattern[i]] != a_tokens[i]:
-            return False
-        elif pattern[i] not in dict_ and a_tokens[i] in dict_.values():
-            return False 
-    return True
+        return 0 
 
+#Author Answer
+from collections import Counter
+
+def csFindTheSingleNumber(nums):
+    hashmap = Counter(nums)
+
+    for k in hashmap.keys()
+        if hashmap[k] == 1:
+            return k
 '''
-Given an array of strings strs, write a function 
-that can group the anagrams. The groups should be
-ordered such that the larger groups come first, 
-with subsequent groups ordered in descending order.
+Given a list of different students' scores, write a function 
+that returns the average of each student's top five scores. 
+You should return the averages in ascending order of the 
+students' id numbers.
 
-An Anagram is a word or phrase formed by rearranging 
-the letters of a different word or phrase, typically 
-using all the original letters exactly once.
+Each entry (scores[i]) has the student's id number 
+(scores[i][0]) and the student's score (scores[i][1]). 
+The averages should be calculated using integer division.
 
 Understand:
-["apt","pat","ear","tap","are","arm"] --> 
-[["apt","pat","tap"],["ear","are"],["arm"]]
-[""] --> [[""]]
-["a"] --> [["a"]]
+Input: [[1,91],[1,92],[2,93],[2,97],[1,60],[2,77],
+[1,65],[1,87],[1,100],[2,100],[2,76]]
+Output: [[1,87],[2,88]]
 
 Plan:
-Create a new dictionary. Iterate through each word in the list. 
-In the for loop, sort the word alphabetically. 
-If the sorted word is not in the dictionary key, 
-put it in a new key value pair. If it is in the dictionary, 
-append it to the key value pair. Return a list of the lists of values, 
-in descending order.
-
-Runtime: O(n)
-Space: O(n)
+For each student, store the student ID and the average of their scores. 
+Sort the array by the order of the average, and return the array. 
 '''
+from statistics import mean
 
-def csGroupAnagrams(strs):
-    dict_ = {}
-    for word in strs:
-        sorted_chars = sorted(word)
-        sorted_word = "".join(sorted_chars)
-        if sorted_word not in dict_:
-            dict_[sorted_word] = [word]
+def csAverageOfTopFive(scores):
+    average_scores = {}
+    for i in range(len(scores)):
+        if scores[i][0] not in average_scores:
+            new_list = []
+            new_list.append(scores[i][1])
+            average_scores[scores[i][0]] = new_list
         else:
-            dict_[sorted_word].append(word)
+            average_scores[scores[i][0]].append(scores[i][1])     
+    print(average_scores) 
     result = []
-    for key, value in dict_.items():
-        result.append(value)
+    for student, grades in average_scores.items():
+        sorted_grades = sorted(grades, reverse=True)
+        top_five = sorted_grades[:5]
+        entry = [student, sum(top_five)//len(top_five)]
+        result.append(entry)
     return result
 
+#Author's Answer
+def csAverageOfTopFive(scores):
+    d={}
+    for i in scores:
+        try:
+            d[i[0]].append(i[1])
+        except:
+            d[i[0]]=[i[1]]
+    for i in d:
+        d[i].sort()
+        d[i]=d[i][::-1][:5]
+    return [[i,sum(d[i])//len(d[i])] for i in d]
+'''
+Given a string text, you need to use the characters 
+of text to form as many instances of the word "lambda" as possible.
+
+You can use each character in text at most once.
+
+Write a function that returns the maximum number of 
+instances of "lambda" that can be formed.
+
+Understand:
+"mbxcdatlas": 1
+"lalaaxcmbdtsumbdav": 2
+"sctlamb": 0
+
+Plan:
+While there is a letter from the text "lambda", pop it off 
+the text and add it to an empty string. If the string spells 
+"lambda', add 1 to the counter, and clear the string/start over. 
+Return the counter. 
+'''
+
+def csMaxNumberOfLambdas(text):
+    lambda_dic = {}
+    char_list = [char for char in text]
+    lambda_list = 'lambda'
+    for char in text:
+        if char in lambda_list and char not in lambda_dic:
+            lambda_dic[char] = 1
+        elif char in lambda_list and char in lambda_dic:
+            lambda_dic[char] += 1
+        else:
+            continue
+
+    min_num = min(lambda_dic.keys(), key=(lambda k: lambda_dic[k]))
+    min_num = lambda_dic[min_num]
+    if all(value >= min_num for value in lambda_dic.values()) and lambda_dic['a'] >= (2*min_num):
+        return min_num
+    else:
+        return 0
+
+#Author's Answer
+def csMaxNumberOfLambdas(text):
+    d = {'l': 0, 'a': 0, 'm': ), 'b': 0 , 'd': 0}
+
+    for e in text:
+        if e in d:
+            if e == 'a':
+                d[e] += 0.5
+            else:
+                d[e] += 1
+    
+    return int(min(d.values()))
